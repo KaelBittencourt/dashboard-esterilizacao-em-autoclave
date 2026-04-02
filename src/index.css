@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 220 20% 8%;
+    --foreground: 213 31% 91%;
+
+    --card: 220 18% 12%;
+    --card-foreground: 213 31% 91%;
+
+    --popover: 220 18% 14%;
+    --popover-foreground: 213 31% 91%;
+
+    --primary: 210 100% 56%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 15% 16%;
+    --secondary-foreground: 213 31% 91%;
+
+    --muted: 220 15% 16%;
+    --muted-foreground: 215 20% 55%;
+
+    --accent: 172 66% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 18%;
+    --input: 220 15% 20%;
+    --ring: 210 100% 56%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 220 18% 10%;
+    --sidebar-foreground: 213 31% 91%;
+    --sidebar-primary: 210 100% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 16%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 210 100% 56%;
+
+    /* Chart colors */
+    --chart-blue: 210 100% 56%;
+    --chart-teal: 172 66% 50%;
+    --chart-orange: 28 100% 55%;
+    --chart-purple: 265 85% 65%;
+    --chart-rose: 350 80% 60%;
+    --chart-green: 142 70% 50%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(220 20% 8%) 0%, hsl(220 18% 14%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(220 18% 13%) 0%, hsl(220 18% 10%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 56%) 0%, hsl(210 100% 68%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(172 66% 50%) 0%, hsl(172 66% 62%) 100%);
+
+    /* Shadows */
+    --shadow-card: 0 4px 24px -4px hsl(220 20% 4% / 0.6);
+    --shadow-glow: 0 0 20px hsl(210 100% 56% / 0.15);
+    --shadow-kpi: 0 2px 12px hsl(220 20% 4% / 0.5);
+
+    /* Chart colors for recharts (1-5) */
+    --chart-1: 210 100% 56%;
+    --chart-2: 172 66% 50%;
+    --chart-3: 28 100% 55%;
+    --chart-4: 265 85% 65%;
+    --chart-5: 350 80% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+}
+
+@layer components {
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+  .text-gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  .shadow-kpi {
+    box-shadow: var(--shadow-kpi);
+  }
+}
