@@ -72,7 +72,6 @@ Abra o seu navegador no endereço: **`http://localhost:5173`**
 
 ## 📸 Screenshots (Galeria da Aplicação)
 
-Aqui você pode adicionar mais prints reais da sua tela para enriquecer o repositório.
 
 <div align="center">
   <img src="public/screenshot-materiais.png" alt="Screenshot da Aba de Materiais" width="48%">
