@@ -12,8 +12,7 @@
 
 <br/>
 
-![Visão Geral do Dashboard](https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2000&h=800)
-*(Exemplo visual de um ambiente de Data Analytics. ⚠️ Substitua esta imagem por um screenshot real da aplicação colocando localmente no arquivo `public/screenshot.png` e atualizando o link aqui)*
+![Visão Geral do Dashboard](public/screenshot-materiais.png)
 
 ---
 
@@ -76,8 +75,8 @@ Abra o seu navegador no endereço: **`http://localhost:5173`**
 Aqui você pode adicionar mais prints reais da sua tela para enriquecer o repositório.
 
 <div align="center">
-  <img src="https://via.placeholder.com/800x450/1A1C1E/FFFFFF?text=Seu+Lindo+Dashboard+Aqui" alt="Screenshot da Aba de Materiais" width="48%">
-  <img src="https://via.placeholder.com/800x450/1A1C1E/00D2D3?text=Aba+de+Tecidos+e+Filtros" alt="Screenshot da Aba de Tecidos" width="48%">
+  <img src="public/screenshot-materiais.png" alt="Screenshot da Aba de Materiais" width="48%">
+  <img src="public/screenshot-tecidos.png" alt="Screenshot da Aba de Tecidos" width="48%">
 </div>
 
 ---
