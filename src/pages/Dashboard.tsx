@@ -38,12 +38,10 @@ export default function Dashboard() {
 
   const handleRefresh = useCallback(() => {
     setIsManualRefreshing(true);
-    refetchM();
-    refetchT();
     setTimeout(() => {
-      setIsManualRefreshing(false);
-    }, 2000);
-  }, [refetchM, refetchT]);
+      window.location.reload();
+    }, 800);
+  }, []);
 
   const currentData = activeTab === "materiais" ? materiais : tecidos;
   const currentSectors = activeTab === "materiais" ? SECTORS_MATERIAIS : SECTORS_TECIDOS;

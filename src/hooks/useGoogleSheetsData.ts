@@ -76,7 +76,7 @@ function parseDateStr(val: string): string {
 }
 
 async function fetchMateriais(): Promise<MaterialRecord[]> {
-  const res = await fetch(MATERIAIS_URL);
+  const res = await fetch(`${MATERIAIS_URL}&_cb=${Date.now()}`, { cache: "no-store" });
   const text = await res.text();
   const rows = parseCSV(text);
   // Skip header
@@ -101,7 +101,7 @@ async function fetchMateriais(): Promise<MaterialRecord[]> {
 }
 
 async function fetchTecidos(): Promise<TecidoRecord[]> {
-  const res = await fetch(TECIDOS_URL);
+  const res = await fetch(`${TECIDOS_URL}&_cb=${Date.now()}`, { cache: "no-store" });
   const text = await res.text();
   const rows = parseCSV(text);
   return rows.slice(1).map((r) => {
