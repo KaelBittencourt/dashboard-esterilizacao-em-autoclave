@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useMateriais, useTecidos } from "@/hooks/useGoogleSheetsData";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { FilterBar } from "@/components/dashboard/FilterBar";
@@ -18,16 +18,43 @@ import {
   SECTORS_MATERIAIS, SECTORS_TECIDOS,
 } from "@/lib/dataUtils";
 
+const PERIOD_STORAGE_KEY = "dashboard-date-filter";
+
+function readStoredPeriod(): { years: number[]; months: number[] } {
+  try {
+    const raw = localStorage.getItem(PERIOD_STORAGE_KEY);
+    if (!raw) return { years: [], months: [] };
+    const parsed = JSON.parse(raw) as { years?: unknown; months?: unknown };
+    const years = Array.isArray(parsed.years)
+      ? parsed.years.filter((y): y is number => Number.isInteger(y))
+      : [];
+    const months = Array.isArray(parsed.months)
+      ? parsed.months.filter((m): m is number => Number.isInteger(m) && m >= 1 && m <= 12)
+      : [];
+    return { years, months };
+  } catch {
+    return { years: [], months: [] };
+  }
+}
+
+function yearFromDate(date: string): number | null {
+  const year = Number(date.slice(0, 4));
+  return Number.isInteger(year) && year >= 2000 && year <= 2100 ? year : null;
+}
+
+function monthFromDate(date: string): number | null {
+  const month = Number(date.slice(5, 7));
+  return month >= 1 && month <= 12 ? month : null;
+}
+
 export default function Dashboard() {
   const { data: materiais, isLoading: loadingM, refetch: refetchM, isFetching: fetchingM } = useMateriais();
   const { data: tecidos, isLoading: loadingT, refetch: refetchT, isFetching: fetchingT } = useTecidos();
 
   const [activeTab, setActiveTab] = useState("materiais");
-  const [startDate, setStartDate] = useState<Date | undefined>(() => {
-    const now = new Date();
-    return new Date(now.getFullYear(), 0, 1);
-  });
-  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [selectedYears, setSelectedYears] = useState<number[]>(() => readStoredPeriod().years);
+  const [selectedMonths, setSelectedMonths] = useState<number[]>(() => readStoredPeriod().months);
+  const [yearsReady, setYearsReady] = useState(false);
   const [materialFilter, setMaterialFilter] = useState("all");
   const [sectorFilter, setSectorFilter] = useState("all");
 
@@ -46,25 +73,67 @@ export default function Dashboard() {
   const currentData = activeTab === "materiais" ? materiais : tecidos;
   const currentSectors = activeTab === "materiais" ? SECTORS_MATERIAIS : SECTORS_TECIDOS;
 
+  const availableYears = useMemo(() => {
+    const years = new Set<number>();
+    for (const record of [...(materiais ?? []), ...(tecidos ?? [])]) {
+      const year = yearFromDate(record.date);
+      if (year) years.add(year);
+    }
+    return [...years].sort((a, b) => b - a);
+  }, [materiais, tecidos]);
+
+  const initializedYears = useRef(false);
+
+  const yearsForFilter = useMemo(() => {
+    const known = availableYears.length > 0
+      ? selectedYears.filter((year) => availableYears.includes(year))
+      : selectedYears;
+    if (known.length > 0) return known;
+    if (!yearsReady && availableYears.length > 0) return [availableYears[0]];
+    return known;
+  }, [selectedYears, availableYears, yearsReady]);
+
+  useEffect(() => {
+    if (initializedYears.current || availableYears.length === 0) return;
+    initializedYears.current = true;
+    setSelectedYears((current) => {
+      const valid = current.filter((year) => availableYears.includes(year));
+      return valid.length > 0 ? valid : [availableYears[0]];
+    });
+    setYearsReady(true);
+  }, [availableYears]);
+
+  useEffect(() => {
+    if (!yearsReady) return;
+    localStorage.setItem(
+      PERIOD_STORAGE_KEY,
+      JSON.stringify({ years: yearsForFilter, months: selectedMonths }),
+    );
+  }, [yearsForFilter, selectedMonths, yearsReady]);
+
+  const handleYearsChange = useCallback((years: number[]) => {
+    setYearsReady(true);
+    setSelectedYears(years);
+  }, []);
+
   const filtered = useMemo(() => {
     if (!currentData) return [];
     let d: typeof currentData = [...currentData];
-    if (startDate || endDate) {
+    if (yearsForFilter.length > 0 || selectedMonths.length > 0) {
+      const years = new Set(yearsForFilter);
+      const months = new Set(selectedMonths);
       d = d.filter((r) => {
-        const rDate = new Date(r.date);
-        if (startDate && rDate < startDate) return false;
-        if (endDate) {
-          const end = new Date(endDate);
-          end.setHours(23, 59, 59);
-          if (rDate > end) return false;
-        }
+        const year = yearFromDate(r.date);
+        const month = monthFromDate(r.date);
+        if (years.size > 0 && (year == null || !years.has(year))) return false;
+        if (months.size > 0 && (month == null || !months.has(month))) return false;
         return true;
       });
     }
     d = filterByMaterial(d as any, materialFilter) as typeof currentData;
     d = filterBySector(d as any, sectorFilter) as typeof currentData;
     return d;
-  }, [currentData, startDate, endDate, materialFilter, sectorFilter]);
+  }, [currentData, yearsForFilter, selectedMonths, materialFilter, sectorFilter]);
 
   const uniqueMaterials = useMemo(() => currentData ? getUniqueValues(currentData as any, "material") : [], [currentData]);
 
@@ -179,10 +248,11 @@ export default function Dashboard() {
           </div>
 
           <FilterBar
-            startDate={startDate}
-            endDate={endDate}
-            onStartDateChange={setStartDate}
-            onEndDateChange={setEndDate}
+            availableYears={availableYears}
+            selectedYears={yearsForFilter}
+            onSelectedYearsChange={handleYearsChange}
+            selectedMonths={selectedMonths}
+            onSelectedMonthsChange={setSelectedMonths}
             materialFilter={materialFilter}
             onMaterialFilterChange={setMaterialFilter}
             sectorFilter={sectorFilter}
@@ -276,12 +346,12 @@ function DashboardContent({
         <TimelineChart data={timelineData} title={`Evolução Diária — ${label}`} />
       </div>
 
-      {/* Distribuição por Setor & Top 10 Lado a Lado */}
+      {/* Distribuição por Setor & Top 5 Lado a Lado */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <DonutChart data={bySector} title="Distribuição por Setor" />
         <BarChartComponent
-          data={byMaterial.slice(0, 10)}
-          title={`Top 10 ${label} por Volume`}
+          data={byMaterial.slice(0, 5)}
+          title={`Top 5 ${label} por Volume`}
           color={variant === "primary" ? "hsl(210 100% 56%)" : "hsl(172 66% 50%)"}
         />
       </div>

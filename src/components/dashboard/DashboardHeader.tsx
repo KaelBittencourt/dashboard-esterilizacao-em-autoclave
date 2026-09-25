@@ -1,5 +1,6 @@
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 
 interface DashboardHeaderProps {
   onRefresh: () => void;
@@ -20,6 +21,7 @@ export function DashboardHeader({ onRefresh, isRefreshing }: DashboardHeaderProp
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <ThemeToggle />
           <Button
             variant="outline"
             size="sm"

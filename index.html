@@ -15,7 +15,14 @@
     <meta property="og:description" content="Painel de uso e métricas de Autoclave" />
     <meta property="og:type" content="website" />
 
-    <meta name="theme-color" content="#111827" />
+    <meta name="theme-color" content="#f4f7fb" />
+    <script>
+      try {
+        if (localStorage.getItem("theme") === "dark") {
+          document.documentElement.classList.add("dark");
+        }
+      } catch (e) {}
+    </script>
   </head>
 
   <body>

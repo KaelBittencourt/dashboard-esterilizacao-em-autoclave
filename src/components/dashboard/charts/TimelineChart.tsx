@@ -24,32 +24,32 @@ export function TimelineChart({ data, lines, title }: TimelineChartProps) {
                 </linearGradient>
               ))}
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 15% 18%)" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
             <XAxis
               dataKey="date"
-              tick={{ fill: "hsl(215 20% 55%)", fontSize: 11 }}
+              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
               tickLine={false}
               axisLine={false}
               minTickGap={30}
               tickMargin={12}
             />
             <YAxis
-              tick={{ fill: "hsl(215 20% 55%)", fontSize: 11 }}
+              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
               tickLine={false}
               axisLine={false}
               tickMargin={12}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "hsl(220 18% 14%)",
-                border: "1px solid hsl(220 15% 18%)",
+                backgroundColor: "hsl(var(--popover))",
+                border: "1px solid hsl(var(--border))",
                 borderRadius: "8px",
-                color: "hsl(213 31% 91%)",
+                color: "hsl(var(--foreground))",
                 fontSize: 12,
               }}
               itemStyle={{ fontSize: 12, fontWeight: 500 }}
             />
-            <Legend wrapperStyle={{ fontSize: 12, color: "hsl(215 20% 55%)", paddingTop: "10px" }} />
+            <Legend wrapperStyle={{ fontSize: 12, color: "hsl(var(--muted-foreground))", paddingTop: "10px" }} />
             {chartLines.map((l) => (
               <Area
                 key={l.key}
@@ -59,7 +59,7 @@ export function TimelineChart({ data, lines, title }: TimelineChartProps) {
                 strokeWidth={2.5}
                 fillOpacity={1}
                 fill={`url(#gradient-${l.key})`}
-                activeDot={{ r: 5, fill: l.color, stroke: "hsl(220 18% 14%)", strokeWidth: 2 }}
+                activeDot={{ r: 5, fill: l.color, stroke: "hsl(var(--card))", strokeWidth: 2 }}
                 name={l.name}
               />
             ))}
